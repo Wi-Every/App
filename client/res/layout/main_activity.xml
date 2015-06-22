@@ -4,13 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <TextView 
+    <Button 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:padding="12dp"
+        android:id="@+id/main_activity_get_location_widget"
+        android:textColor="@color/button_text_color"
+        android:text="@string/main_activity_first_label"
+        android:gravity="center_horizontal|center_vertical"/>
+    
+    <ListView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="@string/main_activity_first_label"
-        android:gravity="center_horizontal|center_vertical"
-        />
+        android:id="@+id/main_activity_listview">
+        
+    </ListView>
     
 
 </LinearLayout>

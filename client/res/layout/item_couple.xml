@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<client.widgets.CoupleView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    
+    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="20sp"
+	        android:padding="6dp"
+	        android:text="@string/key"
+	        android:id="@+id/couple_view_key"
+	        android:gravity="center_horizontal|center_vertical"
+	        android:layout_weight="1"/> 
+	        
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="20sp"
+	        android:padding="6dp"
+	        android:text="@string/value"
+	        android:id="@+id/couple_view_value"
+	        android:gravity="center_horizontal|center_vertical"
+	        android:layout_weight="1"/> 
+    
+
+</client.widgets.CoupleView>

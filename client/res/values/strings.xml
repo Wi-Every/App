@@ -5,7 +5,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     
-    <string name="main_activity_first_label">Wi-Every</string>
+    <string name="main_activity_first_label">Get location</string>
     
-
+	<string name="key">key</string>
+    <string name="value">value</string>
+    
 </resources>
