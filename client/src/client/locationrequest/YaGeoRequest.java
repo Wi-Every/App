@@ -27,8 +27,8 @@ public class YaGeoRequest {
 	
 	/**
 	 * @author alxr
-	 * <br>Сбор данных о wifi сетях не мгновенный. 
-	 * <br>Завершение сбора сигнализируется броадкастом WifiManager.SCAN_RESULTS_AVAILABLE_ACTION 
+	 * <br>РЎР±РѕСЂ РґР°РЅРЅС‹С… Рѕ wifi СЃРµС‚СЏС… РЅРµ РјРіРЅРѕРІРµРЅРЅС‹Р№. 
+	 * <br>Р—Р°РІРµСЂС€РµРЅРёРµ СЃР±РѕСЂР° СЃРёРіРЅР°Р»РёР·РёСЂСѓРµС‚СЃСЏ Р±СЂРѕР°РґРєР°СЃС‚РѕРј WifiManager.SCAN_RESULTS_AVAILABLE_ACTION 
 	 */
 	public interface OnCollectionCompleteListener{
 		public void onComplete(YaGeoRequest mYaGeoRequest);

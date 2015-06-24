@@ -42,10 +42,6 @@ public class YaLocationAnswer {
 	public static final String KEY_TYPE = "type";
 	
 	//local fields
-	/**
-	 * Время, когда был получен ответ. 
-	 * Строка, содержащая часовой пояс.
-	 */
 	public static final String FIELD_TIME = "time";
 	
 	@DatabaseField (columnName = FIELD_LATITUDE) private double latitude;
@@ -110,19 +106,4 @@ public class YaLocationAnswer {
 		if (dm == null) return;
 		dm.createObject(this);
 	}
-	
-	
-
 }
-/*
- * {
-  "position": {
-    "latitude": 55.743675,
-    "longitude": 37.5646301,
-    "altitude": 0.0, 
-    "precision": 701.71643,
-    "altitude_precision": 30.0, 
-    "type": "gsm"
-  }
-}
- * */

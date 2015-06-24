@@ -59,24 +59,24 @@ public class MobileInfo {
 	}
 	
 	/**
-	 * Код страны (MCC, Mobile Country Code)
+	 * РљРѕРґ СЃС‚СЂР°РЅС‹ (MCC, Mobile Country Code)
 	 */
 	private int countrycode;
 	/**
-	 * Код сети мобильной связи (MNC, Mobile Network Code)
+	 * РљРѕРґ СЃРµС‚Рё РјРѕР±РёР»СЊРЅРѕР№ СЃРІСЏР·Рё (MNC, Mobile Network Code)
 	 */
 	private int operatorid;
 	/**
-	 * Идентификатор соты (CID, Cell Identifier)
+	 * РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕС‚С‹ (CID, Cell Identifier)
 	 */
 	private int cellid;
 	/**
-	 * Код местоположения (LAC, Location area code)
+	 * РљРѕРґ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёСЏ (LAC, Location area code)
 	 */
 	private int lac;
 	/**
-	 * Уровень сигнала, измеренный в месте нахождения мобильного устройства. 
-	 * Отрицательное число, выраженное в «децибелах к милливатту» — dBm.
+	 * РЈСЂРѕРІРµРЅСЊ СЃРёРіРЅР°Р»Р°, РёР·РјРµСЂРµРЅРЅС‹Р№ РІ РјРµСЃС‚Рµ РЅР°С…РѕР¶РґРµРЅРёСЏ РјРѕР±РёР»СЊРЅРѕРіРѕ СѓСЃС‚СЂРѕР№СЃС‚РІР°. 
+	 * РћС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ С‡РёСЃР»Рѕ, РІС‹СЂР°Р¶РµРЅРЅРѕРµ РІ В«РґРµС†РёР±РµР»Р°С… Рє РјРёР»Р»РёРІР°С‚С‚СѓВ» вЂ” dBm.
 	 */
 	private int signalStrength;
 	
