@@ -7,31 +7,90 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.telephony.NeighboringCellInfo;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import client.locationrequest.model.MobileInfo;
+import client.locationrequest.model.CustomJSONObject.Bulider;
+import client.locationrequest.model.WiFiInfo;
+
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 
 public class YaGeoRequest {
 	
+	/**
+	 * @author alxr
+	 * <br>Сбор данных о wifi сетях не мгновенный. 
+	 * <br>Завершение сбора сигнализируется броадкастом WifiManager.SCAN_RESULTS_AVAILABLE_ACTION 
+	 */
+	public interface OnCollectionCompleteListener{
+		public void onComplete(YaGeoRequest mYaGeoRequest);
+	}
+	
+	private OnCollectionCompleteListener mListener;
+	private List<Couple> data;
+	private WifiManager mWifiManager;
+	private BroadcastReceiver receiver;
+	
+	public void collectData(Context context){
+		if (context == null) return;
+		this.context = context;
+		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		boolean b = mWifiManager.isWifiEnabled();
+		Log.d(TAG, "WifiEnabled " + b);
+		if (!b) {
+			b = mWifiManager.setWifiEnabled(true);
+			Log.d(TAG, "WifiManager setWifiEnabled result is " + b);		
+		}
+		
+		registerScanReciever(context);
+		mWifiManager.startScan();
+	}
+	
+	private void registerScanReciever(Context context) {
+		if (context == null) return;
+		if (receiver != null) context.unregisterReceiver(receiver);
+		receiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (mListener != null) mListener.onComplete(YaGeoRequest.this);
+				if (YaGeoRequest.this.context != null) YaGeoRequest.this.context.unregisterReceiver(this);
+			}
+		};
+		context.registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	}
+
 	private static final String API = "http://api.lbs.yandex.net/geolocation";
 	private static final String DEV_KEY = "AGdEh1UBAAAAZEgPQgIAa8Jl_NG0Syz_U4m41xKGTygGAs4AAAAAAAAAAABF9WwRI5MIeZ8RfAG0EIypESYR2Q==";
 	public static final MediaType PLAIN = MediaType.parse("plain/text; charset=utf-8");
+	private static final String TAG = YaGeoRequest.class.getSimpleName();
 	
+	private Context context;
+	
+	public YaGeoRequest(OnCollectionCompleteListener mListener) {
+		this.mListener = mListener;
+	}
+
 	public String api(){
 		return API;
 	}
-	
-	public static YaGeoRequest getDefault(){
-		return new YaGeoRequest();
-	}
-	
-	private List<Couple> data;
 	
 	private List<Couple> getData(){
 		if (data == null){
 			data = new ArrayList<YaGeoRequest.Couple>();
 			data.add(getDefaultData());
-			data.add(new Couple("gsm_cells", new JSONArray()));
-			data.add(new Couple("wifi_networks", new JSONArray()));
+			JSONArray mobile = getMobile();
+			JSONArray wifi = getWiFi();
+			data.add(new Couple("gsm_cells", mobile != null? mobile : new JSONArray()));
+			data.add(new Couple("wifi_networks", wifi != null ? wifi : new JSONArray()));
 			GetIpRequest mRequest = null;
 			try {
 				mRequest = GetIpRequest.get();
@@ -40,25 +99,63 @@ public class YaGeoRequest {
 			}
 			JSONObject ipJSON = mRequest != null ? mRequest.getJson() : new JSONObject();
 			data.add(new Couple("ip", ipJSON));
-			
 		}
 		return data;
 	}
 	
+	private JSONArray getWiFi() {
+		if (context == null) return null;
+		if (mWifiManager == null) return null;
+		List<ScanResult> list = mWifiManager.getScanResults();
+		if (list == null) return null;
+		WiFiInfo mWiFiInfo = null;
+		JSONArray array = null;
+		for (ScanResult mResult : list){
+			try {
+				mWiFiInfo = new WiFiInfo(mResult);
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				continue;
+			}
+			JSONObject object = mWiFiInfo.toJSONObject();
+			if (object == null) continue;
+			if (array == null) array = new JSONArray();
+			array.put(object);
+		}
+		return array;
+	}
+
+	private JSONArray getMobile() {
+		if (context == null) return null;
+		TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		if (tm == null) return null;
+		List<NeighboringCellInfo> list = tm.getNeighboringCellInfo();
+		if (list == null) return null;
+		MobileInfo mGsmInfo = null;
+		JSONArray array = null;
+		for (NeighboringCellInfo mInfo : list){
+			try {
+				mGsmInfo = new MobileInfo(mInfo, tm);
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				continue;
+			}
+			JSONObject object = mGsmInfo.toJSONObject();
+			if (object == null) continue;
+			if (array == null) array = new JSONArray();
+			array.put(object);
+			Log.d(TAG, "" + mInfo.toString() + " " + mInfo.getCid());
+		}
+		return array;
+	}
+
 	@Override
 	public String toString(){
 		List<Couple> data = getData();
-		JSONObject object = new JSONObject();
-		for (Couple mCouple : data){
-			try {
-				object.put(mCouple.key, mCouple.value);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return object.toString();
+		Bulider mBulider = new Bulider();
+		for (Couple mCouple : data) mBulider.set(mCouple.key, mCouple.value);
+		return mBulider.get().toString();
 	}
-	
 	
 	private static class Couple{
 		String key;
@@ -81,20 +178,4 @@ public class YaGeoRequest {
 	public RequestBody getRequestBody(){
 		return RequestBody.create(PLAIN, "json=" + toString());
 	}
-	
 }
-/*Обязательное поле
- * В случае, если параметры gsm_cells, wifi_networks, ip отсутствуют в запросе, 
- * а также если предоставлены неверные данные, Яндекс.Локатор определяет местоположение 
- * по IP-адресу отправителя, взятому из заголовка IP-пакета. Этот адрес может быть подменен прокси-сервером, 
- * через который прошел IP-пакет, в результате чего местоположение может определиться неправильно.
- * "common": {
-      "version": "1.0",
-      "api_key": "ABM6WU0BAAAANfFuIQIAV1pUEYIBeogyUNvVbhNaJPWeM-AAAAAAAAAAAACRXgDsaYNpZWpBczn4Lq6QmkwK6g=="
-   }
-   
-   
-   "ip": {
-     "address_v4": "178.247.233.32"
-   }
- * */

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import client.adapters.YaLocationAnswerAdapter;
 import client.database.DatabaseManager;
 import client.locationrequest.YaGeoRequest;
+import client.locationrequest.YaGeoRequest.OnCollectionCompleteListener;
 import client.locationrequest.model.CustomJSONObject;
 import client.locationrequest.model.YaLocationAnswer;
 
@@ -93,53 +94,61 @@ public class MainActivity extends Activity {
 
 	private void start(){
 		if (mTask != null) mTask.cancel(true);
-		mTask = new AsyncTask<YaGeoRequest, String, String>() {
+		YaGeoRequest mRequest = new YaGeoRequest(new OnCollectionCompleteListener() {
 			
 			@Override
-			protected String doInBackground(YaGeoRequest... params) {
-				YaGeoRequest mGeoRequest = params[0];
-				OkHttpClient client = new OkHttpClient();
-				Request request = new Request.Builder()
-				      .url(mGeoRequest.api())
-				      .post(mGeoRequest.getRequestBody())
-				      .build();
+			public void onComplete(YaGeoRequest mYaGeoRequest) {
+				mTask = new AsyncTask<YaGeoRequest, String, String>() {
+					
+					@Override
+					protected String doInBackground(YaGeoRequest... params) {
+						YaGeoRequest mGeoRequest = params[0];
+						OkHttpClient client = new OkHttpClient();
+						Request request = new Request.Builder()
+						      .url(mGeoRequest.api())
+						      .post(mGeoRequest.getRequestBody())
+						      .build();
 
-				Response response = null;
-				String body = null;
-				Log.d(TAG, mGeoRequest.toString());
+						Response response = null;
+						String body = null;
+						Log.d(TAG, mGeoRequest.toString());
+						
+						try {
+							response = client.newCall(request).execute();
+							body = response.body().string();
+						} catch (IOException e) {
+							e.printStackTrace();
+							return null;
+						}
+						
+						try {
+							JSONObject object = new JSONObject(body);
+							JSONObject mObject = object.getJSONObject("position");
+							YaLocationAnswer mAnswer = YaLocationAnswer.get(CustomJSONObject.getCustom(mObject));
+							if (mAnswer == null) Log.d(TAG, "YaLocationAnswer mAnswer == null!");
+							else mAnswer.create(MainActivity.this);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return body;
+					}
+					
+					@Override 
+					public void onPostExecute(String mString){
+						Log.d(TAG, "" + mString);
+						if (isCancelled()) return;
+						if (mString == null) Toast.makeText(MainActivity.this, "Some problem has occurred during location receiving. See Log.", Toast.LENGTH_LONG).show();
+						else listViewSetup();
+					}
+					
+					
+				};
+				mTask.execute(mYaGeoRequest);
 				
-				try {
-					response = client.newCall(request).execute();
-					body = response.body().string();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-				
-				try {
-					JSONObject object = new JSONObject(body);
-					JSONObject mObject = object.getJSONObject("position");
-					YaLocationAnswer mAnswer = YaLocationAnswer.get(CustomJSONObject.getCustom(mObject));
-					if (mAnswer == null) Log.d(TAG, "YaLocationAnswer mAnswer == null!");
-					else mAnswer.create(MainActivity.this);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return body;
 			}
-			
-			@Override 
-			public void onPostExecute(String mString){
-				Log.d(TAG, "" + mString);
-				if (isCancelled()) return;
-				if (mString == null) Toast.makeText(MainActivity.this, "Some problem has occurred during location receiving. See Log.", Toast.LENGTH_LONG).show();
-				else listViewSetup();
-			}
-			
-			
-		};
-		mTask.execute(YaGeoRequest.getDefault());
+		});
+		
+		mRequest.collectData(this);
 	}
-	
 }

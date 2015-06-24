@@ -5,6 +5,26 @@ import org.json.JSONObject;
 
 public class CustomJSONObject extends JSONObject {
 	
+	public static class Bulider{
+		private CustomJSONObject mObject;
+		public Bulider set(String key, Object object){
+			if (key == null || object == null) return this;
+			if (mObject == null) mObject = new CustomJSONObject();
+			try {
+				mObject.put(key, object);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return this;
+		}
+		
+		public CustomJSONObject get(){
+			if (mObject == null) mObject = new CustomJSONObject();
+			return mObject;
+		}
+		
+	}
+	
 	static final String TAG = CustomJSONObject.class.getSimpleName();
 
 	public static CustomJSONObject getCustom(JSONObject source){
@@ -17,6 +37,10 @@ public class CustomJSONObject extends JSONObject {
 			return null;
 		}
 		
+	}
+	
+	public CustomJSONObject(){
+		super();
 	}
 	
 	public CustomJSONObject(String source) throws JSONException{
