@@ -32,7 +32,12 @@ public class YaGeoRequest {
 			data.add(getDefaultData());
 			data.add(new Couple("gsm_cells", new JSONArray()));
 			data.add(new Couple("wifi_networks", new JSONArray()));
-			GetIpRequest mRequest = GetIpRequest.get();
+			GetIpRequest mRequest = null;
+			try {
+				mRequest = GetIpRequest.get();
+			} catch (NoInternetException e) {
+				e.printStackTrace();
+			}
 			JSONObject ipJSON = mRequest != null ? mRequest.getJson() : new JSONObject();
 			data.add(new Couple("ip", ipJSON));
 			

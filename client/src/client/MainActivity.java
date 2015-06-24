@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 import client.adapters.YaLocationAnswerAdapter;
 import client.database.DatabaseManager;
 import client.locationrequest.YaGeoRequest;
@@ -112,6 +113,7 @@ public class MainActivity extends Activity {
 					body = response.body().string();
 				} catch (IOException e) {
 					e.printStackTrace();
+					return null;
 				}
 				
 				try {
@@ -129,9 +131,10 @@ public class MainActivity extends Activity {
 			
 			@Override 
 			public void onPostExecute(String mString){
+				Log.d(TAG, "" + mString);
 				if (isCancelled()) return;
-				Log.d(TAG, mString);
-				listViewSetup();
+				if (mString == null) Toast.makeText(MainActivity.this, "Some problem has occurred during location receiving. See Log.", Toast.LENGTH_LONG).show();
+				else listViewSetup();
 			}
 			
 			

@@ -17,7 +17,7 @@ public class GetIpRequest extends JSONObject{
 		super(body);
 	}
 
-	public static GetIpRequest get(){
+	public static GetIpRequest get() throws NoInternetException{
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
 	      .url(API)
@@ -29,16 +29,16 @@ public class GetIpRequest extends JSONObject{
 			body = response.body().string();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		}
+			throw new NoInternetException("Error while getting IP with " + API + " service.");
+		} 
 		try {
 			return new GetIpRequest(body);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return null;
+			throw new NoInternetException("Error while getting IP with " + API + " service. Stage - passing results");
 		} catch (NullPointerException npe){
 			npe.printStackTrace();
-			return null;
+			throw new NoInternetException("Error while getting IP with " + API + " service. Stage - passing results - NPE");
 		}
 	}
 	
