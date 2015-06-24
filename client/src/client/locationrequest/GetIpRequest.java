@@ -29,11 +29,15 @@ public class GetIpRequest extends JSONObject{
 			body = response.body().string();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 		try {
 			return new GetIpRequest(body);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return null;
+		} catch (NullPointerException npe){
+			npe.printStackTrace();
 			return null;
 		}
 	}
