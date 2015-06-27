@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import client.locationrequest.model.WiFiInfo;
 import client.locationrequest.model.YaLocationAnswer;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -14,7 +15,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	
 	private static final String DATABASE_NAME = "yasha.sqlite";
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,16 +23,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
     
 	@Override
     public void onUpgrade(SQLiteDatabase db,ConnectionSource connectionSource, int oldVersion, int newVersion) {
-		//nothing to upgrade yet
+		createTable(connectionSource, WiFiInfo.class);
+	}
+	
+	private void createTable(ConnectionSource connectionSource, Class<?> clas){
+		try {
+			TableUtils.createTable(connectionSource, clas);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
     public void onCreate(SQLiteDatabase database,ConnectionSource connectionSource) {
-		try {
-			TableUtils.createTable(connectionSource, YaLocationAnswer.class);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	
+		createTable(connectionSource, YaLocationAnswer.class);
+		createTable(connectionSource, WiFiInfo.class);
     }
 }
