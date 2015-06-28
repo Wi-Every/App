@@ -4,9 +4,9 @@
     tools:context="ru.alxr.client.MainActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/show_location"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/menu_location"
         app:showAsAction="never"/>
 
 </menu>

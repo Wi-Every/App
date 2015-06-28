@@ -3,11 +3,15 @@
 
     <string name="app_name">client</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="menu_location">Get location</string>
     
     <string name="main_activity_first_label">Get location</string>
     
 	<string name="key">key</string>
     <string name="value">value</string>
+    
+    <string name="wifi_observer_activity_title">WiFi spots observer</string>
+    <string name="wifi_observer_activity_collect">Collect</string>
+    
     
 </resources>

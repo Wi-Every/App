@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<client.widgets.WiFiInfoView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <include layout="@layout/item_couple"
+        android:id="@+id/item_wi_fi_info_view_name"/>
+    
+    <include layout="@layout/item_couple"
+        android:id="@+id/item_wi_fi_info_view_mac"/>
+    
+    <include layout="@layout/item_couple"
+        android:id="@+id/item_wi_fi_info_view_capabilities"/>
+    
+    <include layout="@layout/item_couple"
+        android:id="@+id/item_wi_fi_info_view_strength"/>
+
+	<include layout="@layout/item_couple"
+        android:id="@+id/item_wi_fi_info_view_frequency"/>
+    
+</client.widgets.WiFiInfoView>

@@ -7,9 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ru.alxr.client.R;
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -25,11 +25,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-/**
- * @author alxr
- * «абавно, что сервис http://www.ip-api.com/json дает большую точность по ip, чем yandex
- */
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 	
 	private static final int LAYOUT = R.layout.main_activity;
 	private static final int LIST_VIEW = R.id.main_activity_listview;

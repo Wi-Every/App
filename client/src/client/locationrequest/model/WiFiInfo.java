@@ -52,6 +52,19 @@ public class WiFiInfo {
 	private long age;
 	
 	/**
+	 * true if this is current connected network;
+	 */
+	private boolean current;
+	
+	public boolean isCurrent() {
+		return current;
+	}
+
+	public void setCurrent(boolean current) {
+		this.current = current;
+	}
+
+	/**
 	 * @return yandex required json
 	 */
 	public JSONObject toJSONObject(){
