@@ -21,6 +21,8 @@ public class WiFiInfoView extends LinearLayout{
 		super(context, attrs);
 	}
 
+	private WiFiInfo mWiFiInfo;
+	
 	public void setWiFiInfo(WiFiInfo mWiFiInfo) {
 		setupCouple(NAME, WiFiInfo.FIELD_NAME_NAME, mWiFiInfo.getNetworkName());
 		setupCouple(MAC, WiFiInfo.FIELD_NAME_MAC, mWiFiInfo.getMac());
@@ -29,8 +31,13 @@ public class WiFiInfoView extends LinearLayout{
 		setupCouple(FREQUENCY, WiFiInfo.FIELD_NAME_FREQUENCY, mWiFiInfo.getFrequency());
 		if (mWiFiInfo.isCurrent()) setBackgroundColor(getResources().getColor(R.color.light_green));
 		else setBackgroundColor(Color.WHITE);
+		this.mWiFiInfo = mWiFiInfo;
 	}
-	
+
+	public WiFiInfo getWiFiInfo() {
+		return mWiFiInfo;
+	}
+
 	private void setupCouple(int id, String key, Object value){
 		CoupleView mView = (CoupleView) findViewById(id);
 		if (mView == null || value == null) return;

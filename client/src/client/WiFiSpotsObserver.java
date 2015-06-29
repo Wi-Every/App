@@ -15,11 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import client.adapters.WiFiSpotsAdapter;
 import client.collectors.WiFiCollector;
 import client.collectors.WiFiCollector.OnCollectionCompleteListener;
 import client.locationrequest.model.WiFiInfo;
+import client.widgets.WiFiInfoView;
 
 public class WiFiSpotsObserver extends ActionBarActivity {
 	
@@ -62,6 +65,21 @@ public class WiFiSpotsObserver extends ActionBarActivity {
 		if ((mAdapter = (WiFiSpotsAdapter) mListView .getAdapter()) == null) {
 			mAdapter = WiFiSpotsAdapter.get(WiFiSpotsObserver.this);
 			mListView .setAdapter(mAdapter);
+			mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					WiFiInfoView mWiFiInfoView = (WiFiInfoView) view;
+					WiFiInfo mWiFiInfo = mWiFiInfoView.getWiFiInfo();
+//					mWiFiInfo.connect(WiFiSpotsObserver.this);
+					
+					mWiFiInfo.setPassword(WiFiSpotsObserver.this, "some PaSsWord");
+					mWiFiInfo.createOrUpdate(WiFiSpotsObserver.this);
+					
+					mWiFiInfo.getPassword(WiFiSpotsObserver.this);
+					return true;
+				}
+			});
 		}
 		if (list == null) {
 			mAdapter.dropData();
@@ -83,8 +101,7 @@ public class WiFiSpotsObserver extends ActionBarActivity {
 		@Override
 		public void onClick(View v) {
 			Log.d(TAG, "BUTTON clicked");
-			ListView mListView = (ListView) findViewById(LIST_VIEW);
-			if (mListView != null && mListView.getAdapter() != null) ((WiFiSpotsAdapter)mListView.getAdapter()).dropData();
+			setupListView(null);
 			if (mWiFiCollector != null) mWiFiCollector.stop();
 			else mWiFiCollector = new WiFiCollector();
 			mWiFiCollector.collectData(new OnCollectionCompleteListener() {
@@ -109,6 +126,18 @@ public class WiFiSpotsObserver extends ActionBarActivity {
 						if (mWifiInfo != null && mWifiInfo.getMacAddress() != null){
 							Log.d(TAG, "Connected to " + mWifiInfo.getBSSID() + " comparing with " + mInfo.getMac());
 							mInfo.setCurrent(mWifiInfo.getBSSID().equals(mInfo.getMac()));
+							if (mInfo.isCurrent()){
+								
+								Log.d(TAG, "CURRENT " + mWifiInfo.getIpAddress());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getLinkSpeed());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getMacAddress());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getNetworkId());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getRssi());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getSSID());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getHiddenSSID());
+								Log.d(TAG, "CURRENT " + mWifiInfo.getSupplicantState());
+								
+							}
 						}
 						mWiFiInfos .add(mInfo);
 					}

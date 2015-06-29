@@ -65,7 +65,7 @@ public class WiFiCollector {
 			} catch (IllegalArgumentException e) {}
 		mListener = null;
 		mWifiManager = null;
-		receiver = null;//mWifiManager.addNetwork(new WifiConfiguration());
+		receiver = null;
 	}
 
 	public List<ScanResult> getScanResults() {
